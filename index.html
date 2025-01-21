@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Meme Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .meme {
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            display: inline-block;
+            text-align: center;
+        }
+        img {
+            max-width: 300px;
+            height: 300px;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Random Meme Generator</h1>
+    <button id="generate-meme">Generate Meme</button>
+    <div id="meme-container">
+        <!-- Meme will be rendered here -->
+    </div>
+
+    <script>
+        // API endpoint to fetch memes
+        const memeApiUrl = "https://api.imgflip.com/get_memes";
+
+        // Function to fetch and display a random meme
+        async function fetchRandomMeme() {
+            try {
+                // Fetch memes from the API
+                const response = await fetch(memeApiUrl);
+                const data = await response.json();
+
+                // Check if the API request was successful
+                if (data.success) {
+                    const memes = data.data.memes;
+
+                    // Select a single random meme
+                    const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+
+                    // Get the container to display the meme
+                    const memeContainer = document.getElementById("meme-container");
+
+                    // Render the random meme
+                    memeContainer.innerHTML = `
+                        <div class="meme">
+                            <h3>${randomMeme.name}</h3>
+                            <img src="${randomMeme.url}" alt="${randomMeme.name}">
+                        </div>
+                    `;
+                } else {
+                    console.error("Failed to fetch memes:", data.error_message);
+                }
+            } catch (error) {
+                console.error("Error fetching meme:", error);
+            }
+        }
+
+        // Add an event listener to the button to generate a meme on click
+        const button = document.getElementById("generate-meme");
+        button.addEventListener("click", fetchRandomMeme);
+    </script>
+</body>
+</html>
